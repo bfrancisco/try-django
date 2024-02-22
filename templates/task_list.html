@@ -8,7 +8,11 @@
 <body>
     <ul>
         {% for task in tasks %}
-            <li>{{task}}</li>
+            <li>
+                <a href="{{ task.get_absolute_url }}">
+                    {{task.name}}
+                </a>
+            </li>
         {% endfor %}
     </ul>
 </body>

@@ -20,7 +20,7 @@ class Task(models.Model):
         return f'{self.name} due on {self.due_date}'
 
     def get_absolute_url(self):
-        return reverse('task-detail', args=[str(self.pk)])
+        return reverse('tasks:task-detail', args=[str(self.pk)])
 
     @property
     def is_due(self):
