@@ -6,6 +6,18 @@
     <title>Task List</title>
 </head>
 <body>
+    {% if request.user.is_authenticated %}
+        <h1>Hello {{ request.user.username }}</h1>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+        
+    {% else %}
+        <h1>Hello world</h1>
+        <a href="{% url 'login' %}">LOGIN</a>
+    {% endif %}
+    
     <ul>
         {% for task in object_list %}
             <li>
