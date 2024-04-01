@@ -6,6 +6,10 @@
     <title>Task List</title>
 </head>
 <body>
+    {% if object.task_image %}
+        <img src="{{ object.task_image.url }}" alt="">
+    {% endif %}
     <p>{{object}}</p>
+    
 </body>
 </html>

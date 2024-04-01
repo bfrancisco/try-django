@@ -1,48 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Task List{% endblock %}
+{% block styles %}{% endblock %}
+{% block main %}
+    <img src="{% static 'img/something.png' %}" alt="">
+    {% if request.user.is_authenticated %}
+            <h1>Hello {{ request.user.username }}</h1>
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+            
+        {% else %}
+            <h1>Hello world</h1>
+            <a href="{% url 'login' %}">LOGIN</a>
+        {% endif %}
+        
+        <ul>
+            {% for task in object_list %}
+                <li>
+                    <a href="{{ task.get_absolute_url }}">
+                        {{task.name}}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="task_name">
+                <span>Task Name</span>
+                <input type="text" id="task_name" name="task_name">
+            </label>
+            <label for="task_due">
+                <span>Task Due Date</span>
+                <input type="datetime-local" id="task_due" name="task_due">
+            </label>
+            <select name="taskgroup" id="taskgroup">
+                {% for group in taskgroups %}
+                <option value="{{ group.pk }}">{{ group }}</option>
+                {% endfor %}
+            </select>
+            <button>Submit</button>
+        </form>
+{% endblock %}
+{% block scripts %}{% endblock %}
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task List</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
 <body>
-    {% if request.user.is_authenticated %}
-        <h1>Hello {{ request.user.username }}</h1>
-        <form action="{% url 'logout' %}" method="post">
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-        </form>
-        
-    {% else %}
-        <h1>Hello world</h1>
-        <a href="{% url 'login' %}">LOGIN</a>
-    {% endif %}
     
-    <ul>
-        {% for task in object_list %}
-            <li>
-                <a href="{{ task.get_absolute_url }}">
-                    {{task.name}}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
-    <form method="POST">
-        {% csrf_token %}
-        <label for="task_name">
-            <span>Task Name</span>
-            <input type="text" id="task_name" name="task_name">
-        </label>
-        <label for="task_due">
-            <span>Task Due Date</span>
-            <input type="datetime-local" id="task_due" name="task_due">
-        </label>
-        <select name="taskgroup" id="taskgroup">
-            {% for group in taskgroups %}
-            <option value="{{ group.pk }}">{{ group }}</option>
-            {% endfor %}
-        </select>
-        <button>Submit</button>
-    </form>
 </body>
 </html>
