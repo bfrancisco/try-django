@@ -1,23 +1,15 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task List</title>
+    <title>Document</title>
 </head>
 <body>
-    <h2><li>{{ object }}</li></h2>
-
-    {% if object.task_image %}
-        <img src="{{ object.task_image.url }}" alt="">
-    {% endif %}
-    <p>{{object}}</p>
-
     <form method="POST">
         {% csrf_token %}
         {{ form.as_div }}
         <button type="submit">Submit</button>
     </form>
-    
 </body>
 </html>

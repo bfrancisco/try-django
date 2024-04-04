@@ -3,8 +3,10 @@ from django.http import HttpResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import CreateView, UpdateView
 
 from .models import Task, TaskGroup
+from .forms import TaskForm
 
 
 def index(request):
@@ -38,18 +40,39 @@ class TaskListView(ListView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['taskgroups'] = TaskGroup.objects.all()
+        ctx["taskgroups"] = TaskGroup.objects.all()
+        ctx["form"] = TaskForm()
         return ctx
 
     def post(self, request, *args, **kwargs):
-        task = Task()
-        task.name = request.POST['task_name']
-        task.due_date = request.POST['task_due']
-        task.taskgroup = TaskGroup.objects.get(pk=request.POST['taskgroup']) 
-        task.save()
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = Task()
+            task.name = form.cleaned_data.get('name')
+            task.due_date = form.cleaned_data.get('due_date')
+            task.taskgroup = form.cleaned_data.get('taskgroup')
+            task.save()
+            return self.get(request, *args, **kwargs)
+        else: 
+            self.object_list = self.get_queryset(**kwargs)
+            context = self.get_context_data(**kwargs)
+            context["form"] = form 
+            return self.render_to_response(context)
 
-        return self.get(request, *args, **kwargs)
+# class TaskDetailView(LoginRequiredMixin, DetailView):
+#     model = Task
+#     template_name = 'task_detail.html'
 
-class TaskDetailView(LoginRequiredMixin, DetailView):
+class TaskCreateView(CreateView):
     model = Task
-    template_name = 'task_detail.html'
+    form_class = TaskForm
+    template_name = "task_create.html"
+
+    def get_success_url(self):
+        return reverse_lazy("tasks:list")
+
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
+    model = Task
+    form_class = TaskForm
+    template_name = "task_detail.html"
+
